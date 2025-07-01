@@ -1,0 +1,15 @@
+{
+  "projects": [
+    {
+      "src": "api",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "web",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ]
+}
