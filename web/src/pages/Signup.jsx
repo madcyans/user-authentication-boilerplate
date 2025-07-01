@@ -1,24 +1,53 @@
 import { useState } from 'react'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 export default function Signup() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
   const navigate = useNavigate()
+
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000'
 
   const handleSubmit = async e => {
     e.preventDefault()
-    await axios.post('http://localhost:4000/api/auth/signup', { email, password })
-    navigate('/login')
+    setError('')
+    try {
+      await axios.post(
+        `${API_URL}/api/auth/signup`,
+        { email, password }
+      )
+      navigate('/login')
+    } catch (err) {
+      setError(err.response?.data?.error || 'Signup failed')
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div className="auth-page">
       <h2>Sign Up</h2>
-      <input type="email" placeholder="Email" onChange={e => setEmail(e.target.value)} />
-      <input type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
-      <button type="submit">Sign Up</button>
-    </form>
+      <form onSubmit={handleSubmit}>
+        {error && <p className="error">{error}</p>}
+        <label>Email</label>
+        <input
+          type="email"
+          value={email}
+          required
+          onChange={e => setEmail(e.target.value)}
+        />
+        <label>Password</label>
+        <input
+          type="password"
+          value={password}
+          required
+          onChange={e => setPassword(e.target.value)}
+        />
+        <button type="submit">Sign Up</button>
+      </form>
+      <p>
+        Already have an account? <Link to="/login">Log in here</Link>
+      </p>
+    </div>
   )
 }
