@@ -9,7 +9,7 @@ export default function Login() {
   const navigate = useNavigate()
 
   // Use VITE_API_URL or default to localhost for dev
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000'
+  const API_URL = import.meta.env.VITE_API_URL ?? ''
 
   const handleSubmit = async e => {
     e.preventDefault()

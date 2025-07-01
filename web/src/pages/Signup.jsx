@@ -8,7 +8,7 @@ export default function Signup() {
   const [error, setError] = useState('')
   const navigate = useNavigate()
 
-  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000'
+  const API_URL = import.meta.env.VITE_API_URL ?? ''
 
   const handleSubmit = async e => {
     e.preventDefault()
