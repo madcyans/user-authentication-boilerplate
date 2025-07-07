@@ -1,4 +1,36 @@
-import { useState } from 'react'
+import { useState } from "react"
+import { signInWithEmailAndPassword } from "firebase/auth"
+import { auth } from "../firebase"
+
+export default function Login() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+
+  const handleSubmit = async e => {
+    e.preventDefault()
+    setError("")
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password)
+      // redirect to protected page
+    } catch (err) {
+      setError(err.message)
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {error && <p>{error}</p>}
+      <input type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+      <input type="password" value={password} onChange={e => setPassword(e.target.value)} required />
+      <button type="submit">Log In</button>
+    </form>
+  )
+}
+
+
+/* import { useState } from 'react'
 import axios from 'axios'
 import { useNavigate, Link } from 'react-router-dom'
 
@@ -52,4 +84,4 @@ export default function Login() {
       </p>
     </div>
   )
-}
+} */
