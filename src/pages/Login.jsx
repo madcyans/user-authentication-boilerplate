@@ -1,38 +1,7 @@
-import { useState } from "react"
-import { signInWithEmailAndPassword } from "firebase/auth"
-import { auth } from "../firebase"
-
-export default function Login() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-
-  const handleSubmit = async e => {
-    e.preventDefault()
-    setError("")
-
-    try {
-      await signInWithEmailAndPassword(auth, email, password)
-      // redirect to protected page
-    } catch (err) {
-      setError(err.message)
-    }
-  }
-
-  return (
-    <form onSubmit={handleSubmit}>
-      {error && <p>{error}</p>}
-      <input type="email" value={email} onChange={e => setEmail(e.target.value)} required />
-      <input type="password" value={password} onChange={e => setPassword(e.target.value)} required />
-      <button type="submit">Log In</button>
-    </form>
-  )
-}
-
-
-/* import { useState } from 'react'
-import axios from 'axios'
-import { useNavigate, Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '../firebase'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -40,29 +9,26 @@ export default function Login() {
   const [error, setError] = useState('')
   const navigate = useNavigate()
 
-  // Use VITE_API_URL or default to localhost for dev
-  const API_URL = import.meta.env.VITE_API_URL ?? ''
-
   const handleSubmit = async e => {
     e.preventDefault()
     setError('')
+
     try {
-      const res = await axios.post(
-        `${API_URL}/api/auth/login`, 
-        { email, password }
-      )
-      localStorage.setItem('token', res.data.token)
+      await signInWithEmailAndPassword(auth, email, password)
       navigate('/home')
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed')
+      setError(err.message)
     }
   }
 
   return (
     <div className="auth-page">
-      <h2>Log In</h2>
+      <h2>Welcome Back!</h2>
+      <p>Login to proceed</p>
+
       <form onSubmit={handleSubmit}>
         {error && <p className="error">{error}</p>}
+
         <label>Email</label>
         <input
           type="email"
@@ -70,6 +36,7 @@ export default function Login() {
           required
           onChange={e => setEmail(e.target.value)}
         />
+
         <label>Password</label>
         <input
           type="password"
@@ -77,11 +44,16 @@ export default function Login() {
           required
           onChange={e => setPassword(e.target.value)}
         />
+
         <button type="submit">Log In</button>
       </form>
-      <p>
-        Don’t have an account? <Link to="/signup">Sign up here</Link>
+
+      <p className="redirect">
+        Don’t have an account?{' '}
+        <Link to="/signup">
+          <button className="signup-btn">Sign Up</button>
+        </Link>
       </p>
     </div>
   )
-} */
+}
