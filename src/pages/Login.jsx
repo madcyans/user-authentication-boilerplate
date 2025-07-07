@@ -23,7 +23,7 @@ export default function Login() {
 
   return (
     <div className="auth-page">
-      <h2>Welcome Back!</h2>
+      <h2>Welcome to Title Page!</h2>
       <p>Login to proceed</p>
 
       <form onSubmit={handleSubmit}>
