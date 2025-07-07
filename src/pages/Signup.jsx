@@ -6,7 +6,6 @@ import {
 import { auth, db } from "../firebase"
 import {
   doc,
-  getDoc,
   setDoc,
   serverTimestamp,
   query,
@@ -28,33 +27,24 @@ export default function Signup() {
     setError("")
     setSuccess("")
 
-    // 1. Check for username uniqueness
-    const q = query(
-      collection(db, "users"),
-      where("username", "==", username)
+    // 1. Check username uniqueness
+    const snaps = await getDocs(
+      query(collection(db, "users"), where("username", "==", username))
     )
-    const snaps = await getDocs(q)
     if (!username.trim() || snaps.size > 0) {
       setError("Username is taken or invalid")
       return
     }
 
     try {
-      const cred = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      )
-
+      const cred = await createUserWithEmailAndPassword(auth, email, password)
       await setDoc(doc(db, "users", cred.user.uid), {
         username,
         email,
         createdAt: serverTimestamp()
       })
-
       setSuccess("Account created! Redirecting…")
       setTimeout(() => navigate("/login"), 2000)
-
     } catch (err) {
       setError(err.message)
     }
@@ -62,8 +52,8 @@ export default function Signup() {
 
   return (
     <div className="auth-page">
-      <h2>Sign Up</h2>
-      <p>Create your account</p>
+      <h2 className="text-2xl font-bold mb-2">Sign Up</h2>
+      <p className="mb-6 text-gray-600">Create your account</p>
 
       <form onSubmit={handleSubmit}>
         {error   && <p className="error">{error}</p>}
@@ -71,6 +61,7 @@ export default function Signup() {
 
         <label>Username</label>
         <input
+          className="auth-input"
           type="text"
           placeholder="Pick a unique username"
           value={username}
@@ -80,6 +71,7 @@ export default function Signup() {
 
         <label>Email</label>
         <input
+          className="auth-input"
           type="email"
           placeholder="you@example.com"
           value={email}
@@ -89,6 +81,7 @@ export default function Signup() {
 
         <label>Password</label>
         <input
+          className="auth-input"
           type="password"
           placeholder="Choose a password"
           value={password}
@@ -96,12 +89,16 @@ export default function Signup() {
           onChange={e => setPassword(e.target.value)}
         />
 
-        <button type="submit">Sign Up</button>
+        <button className="auth-button" type="submit">
+          Sign Up
+        </button>
       </form>
 
-      <p className="redirect">
+      <p className="mt-4 text-center">
         Already have an account?{" "}
-        <Link to="/login">Log In</Link>
+        <Link to="/login" className="link-btn">
+          Log In
+        </Link>
       </p>
     </div>
   )
