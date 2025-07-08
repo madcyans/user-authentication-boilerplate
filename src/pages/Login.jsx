@@ -32,46 +32,55 @@ export default function Login() {
   }
 
   return (
-    <div className="auth-page">
-      <h2 className="text-2xl font-bold mb-2">
-        Welcome Back, {username || "👤"}!
-      </h2>
-      <p className="mb-6 text-gray-600">Login to proceed</p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 to-purple-600 px-4">
+      <div className="w-full max-w-md bg-white rounded-xl p-8 shadow-xl">
+        <h2 className="text-2xl font-bold mb-2 text-gray-800 text-center">
+          Welcome to "Page Title"!
+        </h2>
+        <p className="mb-6 text-gray-500 text-center">Login to proceed</p>
 
-      <form onSubmit={handleSubmit}>
-        {error && <p className="error">{error}</p>}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
-        <label>Username</label>
-        <input
-          className="auth-input"
-          type="text"
-          placeholder="Enter your username"
-          value={username}
-          required
-          onChange={e => setUsername(e.target.value)}
-        />
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Username</label>
+            <input
+              className="auth-input"
+              type="text"
+              placeholder="Enter your username"
+              value={username}
+              required
+              onChange={e => setUsername(e.target.value)}
+            />
+          </div>
 
-        <label>Password</label>
-        <input
-          className="auth-input"
-          type="password"
-          placeholder="Enter your password"
-          value={password}
-          required
-          onChange={e => setPassword(e.target.value)}
-        />
+          <div>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Password</label>
+            <input
+              className="auth-input"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              required
+              onChange={e => setPassword(e.target.value)}
+            />
+          </div>
 
-        <button className="auth-button" type="submit">
-          Log In
-        </button>
-      </form>
+          <button
+            className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-md transition"
+            type="submit"
+          >
+            Log In
+          </button>
+        </form>
 
-      <p className="mt-4 text-center">
-        Don’t have an account?{" "}
-        <Link to="/signup" className="link-btn">
-          Sign Up
-        </Link>
-      </p>
+        <p className="mt-6 text-sm text-center text-gray-600">
+          Don’t have an account?{" "}
+          <Link to="/signup" className="text-indigo-600 hover:underline font-medium">
+            Sign Up
+          </Link>
+        </p>
+      </div>
     </div>
   )
 }

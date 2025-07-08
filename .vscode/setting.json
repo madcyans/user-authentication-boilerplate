@@ -1,5 +1,10 @@
-
 {
   "css.validate": false,
-  "editor.quickSuggestions": { "css": false }
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "tailwindCSS.includeLanguages": {
+    "css": "css",
+    "postcss": "css"
+  }
 }
