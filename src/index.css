@@ -22,4 +22,20 @@
   .success {
     @apply text-green-500 text-sm;
   }
+
+  .menu-button {
+    @apply py-3 px-6
+           rounded-md text-lg font-semibold
+           bg-amber-700 border-2 border-amber-600
+           shadow-inner transition-transform transform
+           hover:scale-105 hover:bg-amber-600;
+  }
+
+  .logout-button {
+    @apply mt-6 py-3 px-6
+           rounded-md text-lg font-semibold
+           bg-red-700 border-2 border-red-600
+           shadow-inner transition-transform transform
+           hover:scale-105 hover:bg-red-600;
+  }
 }

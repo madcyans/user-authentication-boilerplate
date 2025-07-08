@@ -1,8 +1,6 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import {
-  createUserWithEmailAndPassword
-} from "firebase/auth"
+import { createUserWithEmailAndPassword } from "firebase/auth"
 import { auth, db } from "../firebase"
 import {
   doc,
@@ -51,55 +49,70 @@ export default function Signup() {
   }
 
   return (
-    <div className="auth-page">
-      <h2 className="text-2xl font-bold mb-2">Sign Up</h2>
-      <p className="mb-6 text-gray-600">Create your account</p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-600 to-teal-600 px-4">
+      <div className="w-full max-w-md bg-white rounded-xl p-8 shadow-xl">
+        <h2 className="text-2xl font-bold mb-2 text-gray-800 text-center">
+          Create an Account
+        </h2>
+        <p className="mb-6 text-gray-600 text-center">
+          Sign up to get started
+        </p>
 
-      <form onSubmit={handleSubmit}>
-        {error   && <p className="error">{error}</p>}
+        {error && <p className="error">{error}</p>}
         {success && <p className="success">{success}</p>}
 
-        <label>Username</label>
-        <input
-          className="auth-input"
-          type="text"
-          placeholder="Pick a unique username"
-          value={username}
-          required
-          onChange={e => setUsername(e.target.value)}
-        />
+        <form onSubmit={handleSubmit}>
+          <label className="block text-gray-700 mb-1" htmlFor="username">
+            Username
+          </label>
+          <input
+            id="username"
+            className="auth-input"
+            type="text"
+            placeholder="Pick a unique username"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+            required
+          />
 
-        <label>Email</label>
-        <input
-          className="auth-input"
-          type="email"
-          placeholder="you@example.com"
-          value={email}
-          required
-          onChange={e => setEmail(e.target.value)}
-        />
+          <label className="block text-gray-700 mb-1" htmlFor="email">
+            Email
+          </label>
+          <input
+            id="email"
+            className="auth-input"
+            type="email"
+            placeholder="you@gmail.com"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+          />
 
-        <label>Password</label>
-        <input
-          className="auth-input"
-          type="password"
-          placeholder="Choose a password"
-          value={password}
-          required
-          onChange={e => setPassword(e.target.value)}
-        />
+          <label className="block text-gray-700 mb-1" htmlFor="password">
+            Password
+          </label>
+          <input
+            id="password"
+            className="auth-input"
+            type="password"
+            placeholder="Input password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+          />
 
-        <button className="auth-button" type="submit">
-          Sign Up
-        </button>
-      </form>
+          <button className="auth-button" type="submit">
+            Sign Up
+          </button>
+        </form>
 
-      <p className="mt-4 text-center">
-        Already have an account?{" "}
-        <Link to="/login" className="link-btn">
-          Log In
-        </Link>
-      </p>
+        <p className="mt-4 text-center">
+          Already have an account?{" "}
+          <Link to="/login" className="link-btn">
+            Log In
+          </Link>
+        </p>
+      </div>
     </div>
   )
 }

@@ -1,35 +1,32 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Signup from './pages/Signup';
-import Login from './pages/Login';
-import Home from './pages/Home';
-import ProtectedRoute from './components/ProtectedRoute';
+import React from "react"
+import { Routes, Route, Navigate } from "react-router-dom"
+import Signup from "./pages/Signup.jsx"
+import Login from "./pages/Login.jsx"
+import Home from "./pages/Home.jsx"
+import ProtectedRoute from "./components/ProtectedRoute.jsx"
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
+    <Routes>
+      {/* redirect root → /login */}
+      <Route index element={<Navigate to="/login" replace />} />
 
-        {/* 1. Root path redirects to /login */}
-        <Route index element={<Navigate to="/login" replace />} />
+      {/* public */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
 
-        {/* 2. Public routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+      {/* guarded */}
+      <Route
+        path="/home"
+        element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        }
+      />
 
-        {/* 3. Protected home route */}
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute>
-              <Home />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* 4. Fallback for unknown paths */}
-        <Route path="*" element={<Navigate to="/login" replace />} />
-
-      </Routes>
-    </BrowserRouter>
-  );
+      {/* fallback */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
+  )
 }
