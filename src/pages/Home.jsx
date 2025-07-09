@@ -1,22 +1,50 @@
-import React, { useState } from "react"
+import React, { useRef, useEffect, useState } from "react"
 import { useAuth } from "../contexts/AuthContext.jsx"
 import { useNavigate } from "react-router-dom"
 import SettingsModal from "../components/SettingsModal"
 import LeaderboardModal from "../components/LeaderboardModal"
-import ProfileModal from "../components/ProfileModal"   // ← don’t forget this
+import ProfileModal from "../components/ProfileModal"
+import { useSettings } from "../contexts/SettingsContext"
 
 export default function Home() {
-  const { user, logout } = useAuth()     // ← grab `user` here
-  const navigate          = useNavigate()
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
+  const audioRef = useRef(null)
 
-  const [showSettings, setShowSettings]   = useState(false)
+  const { settings, setSettings } = useSettings()
+
+  const [showSettings, setShowSettings] = useState(false)
   const [showLeaderboard, setShowLeaderboard] = useState(false)
-  const [showProfile, setShowProfile]     = useState(false)
+  const [showProfile, setShowProfile] = useState(false)
 
   const handleLogout = async () => {
     await logout()
     navigate("/login")
   }
+
+  // Control music playback and volume
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+    audio.volume = settings.volume / 100
+    if (settings.music) {
+      audio.play().catch(() => {})
+    } else {
+      audio.pause()
+      audio.currentTime = 0
+    }
+  }, [settings.music, settings.volume])
+
+  // Pause music when leaving Home
+  useEffect(() => {
+    return () => {
+      const audio = audioRef.current
+      if (audio) {
+        audio.pause()
+        audio.currentTime = 0
+      }
+    }
+  }, [])
 
   return (
     <div className="min-h-screen flex items-center justify-center
@@ -53,10 +81,22 @@ export default function Home() {
         </button>
       </div>
 
+      {/* Background music */}
+      <audio
+        ref={audioRef}
+        src="/home-music.mp3"
+        loop
+        autoPlay
+        hidden
+      />
+
       <SettingsModal
         isOpen={showSettings}
-        initial={{ volume:50, soundFX:true, music:true, difficulty:"medium", timer:true }}
-        onClose={updated => setShowSettings(false)}
+        initial={settings}
+        onClose={updated => {
+          if (updated) setSettings(updated)
+          setShowSettings(false)
+        }}
       />
 
       <LeaderboardModal

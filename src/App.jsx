@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom"
 import Signup from "./pages/Signup.jsx"
 import Login from "./pages/Login.jsx"
 import Home from "./pages/Home.jsx"
+import QuizPage from "./pages/QuizPage.jsx"
 import ProtectedRoute from "./components/ProtectedRoute.jsx"
 
 export default function App() {
@@ -21,6 +22,15 @@ export default function App() {
         element={
           <ProtectedRoute>
             <Home />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/play"
+        element={
+          <ProtectedRoute>
+            <QuizPage />
           </ProtectedRoute>
         }
       />

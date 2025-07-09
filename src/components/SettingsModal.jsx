@@ -75,9 +75,9 @@ export default function SettingsModal({ isOpen, onClose, initial }) {
             onChange={e => setDifficulty(e.target.value)}
             className="w-full border border-yellow-700 rounded px-3 py-2 bg-yellow-800 text-yellow-100"
           >
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
+            <option value="easy">Hard</option>
+            <option value="medium">Tough</option>
+            <option value="hard">Grueling</option>
           </select>
         </div>
 
