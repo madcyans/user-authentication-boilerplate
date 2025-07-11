@@ -111,7 +111,6 @@ export default function Signup() {
                 tabIndex={-1}
                 onClick={() => setShowPassword(v => !v)}
               >
-                {showPassword ? "🙈" : "👁️"}
               </button>
             </div>
           </div>

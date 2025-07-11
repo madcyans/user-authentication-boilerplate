@@ -2,11 +2,13 @@ import { useEffect, useState } from "react"
 import { db } from "../firebase"
 import { collection, query, where, getDocs } from "firebase/firestore"
 import { useAuth } from "../contexts/AuthContext"
+import { useClickSound } from "../contexts/SoundContext"
 
 export default function ProfileModal({ isOpen, onClose }) {
   const { user } = useAuth()
   const [stats, setStats] = useState(null)
   const [error, setError] = useState("")
+  const playClick = useClickSound()
 
   useEffect(() => {
     if (!isOpen || !user) return
@@ -36,6 +38,11 @@ export default function ProfileModal({ isOpen, onClose }) {
     return () => { canceled = true }
   }, [isOpen, user])
 
+  const handleClose = () => {
+    playClick()
+    onClose()
+  }
+
   if (!isOpen) return null
 
   return (
@@ -54,7 +61,7 @@ export default function ProfileModal({ isOpen, onClose }) {
         )}
         <button
           className="mt-4 px-4 py-2 bg-yellow-700 rounded hover:bg-yellow-800"
-          onClick={onClose}
+          onClick={handleClose}
         >
           Close
         </button>

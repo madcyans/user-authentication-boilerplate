@@ -10,15 +10,25 @@ function shuffle(arr) {
     .map(o => o.v)
 }
 
-export function useQuiz(onGameEnd, timerEnabled = true) {
+// ✅ CHANGED: Accept third argument `quizKey`
+export function useQuiz(onGameEnd, timerEnabled = true, quizKey = 0) {
   const [questions, setQuestions] = useState([])
   const [index,     setIndex]     = useState(0)
   const [score,     setScore]     = useState(0)
   const [wrong,     setWrong]     = useState(0)
-  const [timeLeft,  setTimeLeft]  = useState(10)
+  const [timeLeft,  setTimeLeft]  = useState(15)
   const timerRef = useRef()
 
-  // 1) Load & pick 10 random questions
+  // ✅ NEW: Reset everything when quizKey changes
+  useEffect(() => {
+    setQuestions([])
+    setIndex(0)
+    setScore(0)
+    setWrong(0)
+    setTimeLeft(15)
+  }, [quizKey])
+
+  // ✅ CHANGED: Reload questions on quizKey
   useEffect(() => {
     async function load() {
       const snap = await getDocs(collection(db, "questions"))
@@ -26,18 +36,18 @@ export function useQuiz(onGameEnd, timerEnabled = true) {
       setQuestions(shuffle(all).slice(0, 10))
     }
     load()
-  }, [])
+  }, [quizKey])
 
-  // 2) Start/reset 10s timer on each question
+  // Timer logic resets on each question
   useEffect(() => {
-    if (!timerEnabled) return // <--- skip timer if disabled
+    if (!timerEnabled) return
     clearInterval(timerRef.current)
     setTimeLeft(15)
     timerRef.current = setInterval(() => {
       setTimeLeft(t => {
         if (t <= 1) {
           clearInterval(timerRef.current)
-          handleAnswer(null)    // timeout counts as wrong
+          handleAnswer(null) // timeout = wrong
           return 15
         }
         return t - 1
@@ -46,7 +56,7 @@ export function useQuiz(onGameEnd, timerEnabled = true) {
     return () => clearInterval(timerRef.current)
   }, [index, questions, timerEnabled])
 
-  // 3) Handle selecting an answer
+  // Answer handler
   const handleAnswer = useCallback(choice => {
     clearInterval(timerRef.current)
     const q = questions[index]
@@ -55,9 +65,11 @@ export function useQuiz(onGameEnd, timerEnabled = true) {
     if (correct) setScore(s => s + 1)
     else setWrong(w => w + 1)
 
-    // Check for game end (3 wrong or 10 questions)
-    if (wrong + (correct ? 0 : 1) >= 3 || index + 1 >= questions.length) {
-      onGameEnd({ score: score + (correct ? 1 : 0), wrong: wrong + (correct ? 0 : 1) })
+    const nextWrong = wrong + (correct ? 0 : 1)
+    const nextScore = score + (correct ? 1 : 0)
+
+    if (nextWrong >= 3 || index + 1 >= questions.length) {
+      onGameEnd({ score: nextScore, wrong: nextWrong })
     } else {
       setIndex(i => i + 1)
     }

@@ -51,7 +51,7 @@ export default function Login() {
                       border border-yellow-800
                       rounded-2xl shadow-2xl text-yellow-100">
         <h2 className="text-2xl font-bold mb-2 text-center">
-          Welcome to "QuizMaster 3000"!
+          Welcome to "The Ridiculous Quiz Game!"
         </h2>
         <p className="mb-6 text-center text-yellow-200">Login to proceed</p>
 
@@ -87,7 +87,6 @@ export default function Login() {
                 tabIndex={-1}
                 onClick={() => setShowPassword(v => !v)}
               >
-                {showPassword ? "🙈" : "👁️"}
               </button>
             </div>
           </div>

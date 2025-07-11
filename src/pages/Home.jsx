@@ -1,15 +1,18 @@
-import React, { useRef, useEffect, useState } from "react"
+import React, { useRef, useState } from "react"
 import { useAuth } from "../contexts/AuthContext.jsx"
 import { useNavigate } from "react-router-dom"
 import SettingsModal from "../components/SettingsModal"
 import LeaderboardModal from "../components/LeaderboardModal"
 import ProfileModal from "../components/ProfileModal"
 import { useSettings } from "../contexts/SettingsContext"
+import { useClickSound } from "../contexts/SoundContext"
+import { useMusicPlayer } from "../hooks/useMusicPlayer"
 
 export default function Home() {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const audioRef = useRef(null)
+  const playClick = useClickSound()
 
   const { settings, setSettings } = useSettings()
 
@@ -17,61 +20,45 @@ export default function Home() {
   const [showLeaderboard, setShowLeaderboard] = useState(false)
   const [showProfile, setShowProfile] = useState(false)
 
+  // Use the custom hook to handle all music logic, including cleanup
+  useMusicPlayer(audioRef)
+
   const handleLogout = async () => {
+    playClick()
     await logout()
     navigate("/login")
   }
 
-  // Control music playback and volume
-  useEffect(() => {
-    const audio = audioRef.current
-    if (!audio) return
-    audio.volume = settings.volume / 100
-    if (settings.music) {
-      audio.play().catch(() => {})
-    } else {
-      audio.pause()
-      audio.currentTime = 0
-    }
-  }, [settings.music, settings.volume])
-
-  // Pause music when leaving Home
-  useEffect(() => {
-    return () => {
-      const audio = audioRef.current
-      if (audio) {
-        audio.pause()
-        audio.currentTime = 0
-      }
-    }
-  }, [])
+  // The old cleanup useEffect has been removed.
 
   return (
     <div className="min-h-screen flex items-center justify-center
                     bg-[radial-gradient(circle_at_center,_#8b5e3c,_#3a2314)]
                     px-4">
-      <div className="relative w-full max-w-md p-8 space-y-6
+      <div className="relative w-full max-w-md p-6 space-y-6
                       bg-yellow-900/80 backdrop-blur-sm
                       border border-yellow-800
                       rounded-2xl shadow-2xl text-yellow-100">
-        <h1 className="text-3xl font-extrabold drop-shadow-lg">
-          🌲 QuizMaster 3000 🌿
+        <h1 className="text-3xl text-center font-extrabold drop-shadow-lg whitespace-nowrap">
+          <span style={{ display: "inline-block", transform: "scaleX(-1)" }}>
+  🦆
+</span>Ridiculous Quiz Game🦆
         </h1>
-        <p className="text-lg">
+        <p className="text-lg text-center">
           Welcome, {user?.username || "Guest"}! Ready to test your wits?
         </p>
 
         <div className="flex flex-col gap-4">
-          <button onClick={() => navigate("/play")}       className="menu-button">
+          <button onClick={() => { playClick(); navigate("/play") }}       className="menu-button">
             Play Quiz
           </button>
-          <button onClick={() => setShowLeaderboard(true)} className="menu-button">
+          <button onClick={() => { playClick(); setShowLeaderboard(true) }} className="menu-button">
             Leaderboard
           </button>
-          <button onClick={() => setShowProfile(true)}     className="menu-button">
+          <button onClick={() => { playClick(); setShowProfile(true) }}     className="menu-button">
             Profile
           </button>
-          <button onClick={() => setShowSettings(true)}    className="menu-button">
+          <button onClick={() => { playClick(); setShowSettings(true) }}    className="menu-button">
             Settings
           </button>
         </div>
@@ -81,7 +68,7 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Background music */}
+      {/* Background music element */}
       <audio
         ref={audioRef}
         src="/home-music.mp3"
@@ -94,6 +81,7 @@ export default function Home() {
         isOpen={showSettings}
         initial={settings}
         onClose={updated => {
+          playClick() // Play sound on modal close
           if (updated) setSettings(updated)
           setShowSettings(false)
         }}
@@ -101,13 +89,18 @@ export default function Home() {
 
       <LeaderboardModal
         isOpen={showLeaderboard}
-        onClose={() => setShowLeaderboard(false)}
-        top={10}
+        onClose={() => {
+          // The sound is handled inside the modal, just need to close it
+          setShowLeaderboard(false)
+        }}
       />
 
       <ProfileModal
         isOpen={showProfile}
-        onClose={() => setShowProfile(false)}
+        onClose={() => {
+          // The sound is handled inside the modal, just need to close it
+          setShowProfile(false)
+        }}
       />
     </div>
   )
